@@ -10,9 +10,9 @@ on:
 
 jobs:
   PVS-Studio:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
@@ -23,9 +23,9 @@ jobs:
         run: |
           if [[ "$PVS_STUDIO_LICENSE" != "" ]];
           then
-            wget -q https://files.viva64.com/etc/pubkey.txt
+            wget -q https://files.pvs-studio.com/etc/pubkey.txt
             sudo apt-key add pubkey.txt
-            sudo wget -O /etc/apt/sources.list.d/viva64.list https://files.viva64.com/etc/viva64.list
+            sudo wget -O /etc/apt/sources.list.d/viva64.list https://files.pvs-studio.com/etc/viva64.list
             sudo apt-get update
             sudo apt-get install -y pvs-studio
             pvs-studio-analyzer credentials -o pvs-studio.lic $PVS_STUDIO_LICENSE
@@ -42,5 +42,5 @@ jobs:
           fi
           cd examples/example_null
           pvs-studio-analyzer trace -- make WITH_EXTRA_WARNINGS=1
-          pvs-studio-analyzer analyze --disableLicenseExpirationCheck -e ../../imstb_rectpack.h -e ../../imstb_textedit.h -e ../../imstb_truetype.h -l ../../pvs-studio.lic -o pvs-studio.log
+          pvs-studio-analyzer analyze -e ../../imstb_rectpack.h -e ../../imstb_textedit.h -e ../../imstb_truetype.h -l ../../pvs-studio.lic -o pvs-studio.log
           plog-converter -a 'GA:1,2;OP:1' -d V1071 -t errorfile -w pvs-studio.log
